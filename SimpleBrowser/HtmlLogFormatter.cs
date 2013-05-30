@@ -3,7 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using RazorHosting;
+    using RazorEngine;
     using SimpleBrowser.Properties;
 
     public class HtmlLogFormatter
@@ -23,17 +23,17 @@
 
         public string Render(List<LogItem> logs, string title)
         {
-            var engine = new RazorEngine<RazorTemplateBase>();
-            var html = engine.RenderTemplate(Resources.HtmlLogTemplate, new[] { typeof(Browser).Assembly.Location, "System.Web.dll" }, new RazorModel
-            {
-                CaptureDate = DateTime.UtcNow,
-                TotalDuration = logs.Count == 0 ? TimeSpan.MinValue : logs.Last().ServerTime - logs.First().ServerTime,
-                Title = title,
-                Logs = logs,
-                RequestsCount = logs.Count(l => l is HttpRequestLog)
-            });
-
-            return html ?? engine.ErrorMessage;
+            return Razor.Parse(
+                Resources.HtmlLogTemplate,
+                new RazorModel
+                    {
+                        CaptureDate = DateTime.UtcNow,
+                        TotalDuration =
+                            logs.Count == 0 ? TimeSpan.MinValue : logs.Last().ServerTime - logs.First().ServerTime,
+                        Title = title,
+                        Logs = logs,
+                        RequestsCount = logs.Count(l => l is HttpRequestLog)
+                    });
         }
     }
 }
