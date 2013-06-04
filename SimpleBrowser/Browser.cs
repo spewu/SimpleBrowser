@@ -347,6 +347,11 @@ namespace SimpleBrowser
 			if (log != null && RequestLogged != null)
 				RequestLogged(this, log);
 		}
+
+        public void ClearLogs()
+        {
+            _logs.Clear();
+        }
 		#endregion
 
 		public bool Navigate(string url)
